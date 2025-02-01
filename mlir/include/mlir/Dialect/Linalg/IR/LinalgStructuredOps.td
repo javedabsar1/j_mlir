@@ -563,15 +563,15 @@ def ElementwiseOp : LinalgStructuredBase_Op<"elementwise", [
     The attribute `kind` describes the operation (e.g. add, exp). The operation
     kind can be any elementwise nary (e.g. unary, binary) operation.
 
-    Affine-maps for operands and result are reuired to be provided by the user
+    Affine-maps for operands and result are required to be provided by the user
     when transpose and/or broadcast is needed on any operand. When a map is not
     provided, default identity maps are inferred for each operand. The number
     of dims in each of the identity maps is equal to the rank of the output type.
     In the case of default indexing map, all input and output shapes must match.
-    User-defined Affine-map for operands and result must only be projected
+    User-defined affine-map for operands and result must only be projected
     permutations with no zero constants.
 
-    For elementwise, iterator-types are always 'all parallel’.
+    For elementwise, iterator-types are always `all parallel`.
     Iterator-types are needed for constructing the underlying structured op.
     The number of dims of the iterator-types are inferred from the rank of
     the result type.
@@ -597,7 +597,7 @@ def ElementwiseOp : LinalgStructuredBase_Op<"elementwise", [
   }];
 
   let arguments = (ins
-      Variadic<AnyType>:$inputs,
+      Variadic<AnyShaped>:$inputs,
       Variadic<AnyShaped>:$outputs,
       ElementwiseFnAttr:$kind,
       DefaultValuedOptionalAttr<AffineMapArrayAttr, "{}">:$indexing_maps

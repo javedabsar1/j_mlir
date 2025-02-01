@@ -3667,28 +3667,29 @@ unsigned getArityFromCategory(ElementwiseNAryCategory category) {
 } // namespace
 
 static NAryCategoryAndFn getNAryCategoryAndFn(ElementwiseFn fn) {
-  constexpr int lastUnary = static_cast<int>(ElementwiseFn::erf);
-  constexpr int lastBinary = static_cast<int>(ElementwiseFn::powf);
-  constexpr int lastTernary = static_cast<int>(ElementwiseFn::select);
+  constexpr int lastUnary = static_cast<int>(ElementwiseFnLimits::LastUnary);
+  constexpr int lastBinary = static_cast<int>(ElementwiseFnLimits::LastBinary);
+  constexpr int lastTernary =
+      static_cast<int>(ElementwiseFnLimits::LastTernary);
 
   int val = static_cast<int>(fn);
   NAryCategoryAndFn result;
 
-  if (val <= lastUnary) {
+  if (val < lastUnary) {
     result.category = ElementwiseNAryCategory::Unary;
     result.fn.unaryFn = static_cast<UnaryFn>(val);
     return result;
   }
-  if (val <= lastBinary) {
+  if (val < lastBinary) {
     result.category = ElementwiseNAryCategory::Binary;
-    result.fn.binaryFn = static_cast<BinaryFn>(val - lastUnary - 1);
+    result.fn.binaryFn = static_cast<BinaryFn>(val - lastUnary);
     return result;
   }
-  if (val > lastTernary) {
+  if (val >= lastTernary) {
     llvm_unreachable("unhandled ElementwiseFn");
   }
   result.category = ElementwiseNAryCategory::Ternary;
-  result.fn.ternaryFn = static_cast<TernaryFn>(val - lastBinary - 1);
+  result.fn.ternaryFn = static_cast<TernaryFn>(val - lastBinary);
   return result;
 }
 

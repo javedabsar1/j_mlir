@@ -89,6 +89,21 @@ def ElementwiseFn :
   let cppNamespace = "::mlir::linalg";
 }
 
+// Define an `enum class : i32` that marks where each individual enum class
+// e.g. UnaryFn, BinaryFn, etc. end in the unified enum class ElementwiseFn.
+def ElementwiseFnLimits : I32EnumAttr<"ElementwiseFnLimits", "", []> {
+  int last_unary = !size(UnaryFn.enumerants);
+  int last_binary = !add(last_unary, !size(BinaryFn.enumerants));
+  int last_ternary = !add(last_binary, !size(TernaryFn.enumerants));
+
+  let enumerants =  [
+         I32EnumAttrCase<"LastUnary", last_unary>,
+         I32EnumAttrCase<"LastBinary", last_binary>,
+         I32EnumAttrCase<"LastTernary", last_ternary>];
+  let genSpecializedAttr = 0;
+  let cppNamespace = "::mlir::linalg";
+}
+
 // Define an `enum class : i32` to categorise elementwise ops.
 def ElementwiseNAryCategory : I32EnumAttr<"ElementwiseNAryCategory", "", [
   I32EnumAttrCase<"Unary", 0>,
